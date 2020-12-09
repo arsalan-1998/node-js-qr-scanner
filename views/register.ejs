@@ -1,0 +1,160 @@
+
+<%- include('partials/headers') %>
+
+<%- include('partials/navbar') %>
+
+<body>
+    <!-- Prealoader -->
+    <div id="preloader-wrapper">
+        <div class="preloader loading">
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+          </div>
+    </div>
+    <!-- Prealoader -->
+
+    <!-- Section -->
+    <section id="main-content" class="uk-section uk-section-default hidden">
+        <h1>Register</h1>
+        <br>
+        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider="center: true">
+
+            <ul class="uk-slider-items uk-grid">
+                <li class="uk-width-3-4">
+                    <div class="uk-panel">
+                        <img src="/public/assets/images/road.jpg" alt="">
+                        <div class="uk-position-center uk-panel"></div>
+                    </div>
+                </li>
+                <li class="uk-width-3-4">
+                    <div class="uk-panel">
+                        <img src="/public/assets/images/road-1.jpg" alt="">
+                        <div class="uk-position-center uk-panel"></div>
+                    </div>
+                </li>
+                <li class="uk-width-3-4">
+                    <div class="uk-panel">
+                        <img src="/public/assets/images/hex.jpg" alt="">
+                        <div class="uk-position-center uk-panel"></div>
+                    </div>
+                </li>
+                <li class="uk-width-3-4">
+                    <div class="uk-panel">
+                        <img src="/public/assets/images/hex-1.jpg" alt="">
+                        <div class="uk-position-center uk-panel"></div>
+                    </div>
+                </li>
+                <li class="uk-width-3-4">
+                    <div class="uk-panel">
+                        <img src="/public/assets/images/hex-2.jpg" alt="">
+                        <div class="uk-position-center uk-panel"></div>
+                    </div>
+                </li>
+            </ul>
+        
+            <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+            <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+        
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="uk-section">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="alert_display" style="display: none;">
+                        <div id="alert_color" class="uk-alert-primary" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p id="alert_message"></p>
+                        </div>
+                    </div>
+                    <form class="uk-grid-small" uk-grid>
+                        <div class="uk-width-1-1">
+                            <input id="user_name" class="uk-input" type="text" placeholder="User Name">
+                        </div>
+                        <div class="uk-width-1-1" style="margin-top: 8px;">
+                            <input id="user_email" class="uk-input" type="email" placeholder="User Email">
+                        </div>
+                        <div class="uk-width-1-1" style="margin-top: 8px;">
+                            <input id="user_phone" class="uk-input" type="number" placeholder="User phone">
+                        </div>
+                        <div class="uk-width-1-2@s" style="margin-top: 8px;">
+                            <input id="password" class="uk-input" type="password" placeholder="password">
+                        </div>
+                        <div class="uk-width-1-2@s" style="margin-top: 8px;">
+                            <input id="c_password" class="uk-input" type="password" placeholder="confirm password">
+                        </div>
+                    </form>
+                    <br>
+                    <button class="uk-button uk-button-primary" onclick="register()">SUBMIT</button>
+                    <div style="margin-top: 4px;">
+                        <a class="uk-button" href="/login">Have Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+    </section>
+    <!-- Section -->
+
+    <script>
+        function register() {
+            let alert_display = document.getElementById('alert_display');
+            let alert_color = document.getElementById('alert_color');
+            let alert_message = document.getElementById('alert_message');
+
+            let user_name = document.getElementById('user_name').value;
+            let user_phone = document.getElementById('user_phone').value;
+            let user_email = document.getElementById('user_email').value;
+            let password = document.getElementById('password').value;
+            let c_password = document.getElementById('c_password').value;
+
+            if( user_name == '' || user_phone == '' || user_email == '' || password == '' || c_password == '' ) {
+                alert_display.style.display = 'block';
+                alert_color.classList.toggle('uk-alert-danger');
+                alert_message.innerHTML = "Please Fill the form";
+                setTimeout(() => {
+                    alert_display.style.display = 'none';
+                    alert_color.classList.toggle('uk-alert-danger');
+                    alert_message.innerHTML = "Please Fill the form";
+                }, 2000);
+            } else if( user_phone.length !=10 ) {
+                alert_display.style.display = 'block';
+                alert_color.classList.toggle('uk-alert-danger');
+                alert_message.innerHTML = "Please Enter Correct 10 digit phone number only";
+                setTimeout(() => {
+                    alert_display.style.display = 'none';
+                    alert_color.classList.toggle('uk-alert-danger');
+                    alert_message.innerHTML = "Please Enter Correct 10 digit phone number only";
+                }, 2000);
+            } else {
+                if( password === c_password ) {
+                    $.post('/register', { "user_name":user_name, "user_phone":user_phone, "user_email":user_email, "password":password })
+                    .then((data, textStatus) => {
+                        if(!data) {
+                            setTimeout(() => {
+                                alert_display.style.display = 'block';
+                                alert_color.classList.toggle('uk-alert-success');
+                                alert_message.innerHTML = "Successful "+textStatus;
+                            }, 2000);
+                        }
+                    });
+                } else {
+                    setTimeout(() => {
+                        alert_display.style.display = 'block';
+                        alert_color.classList.toggle('uk-alert-danger');
+                        alert_message.innerHTML = "Password Doesnot Match";
+                    }, 2000);
+                }
+            }        
+        }
+    </script>
+
+</body>
+
+<%- include('partials/footer') %>

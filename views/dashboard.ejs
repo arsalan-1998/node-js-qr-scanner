@@ -1,0 +1,87 @@
+
+<%- include('partials/headers') %>
+
+<%- include('partials/navbar') %>
+
+<body>
+    <!-- Prealoader -->
+    <div id="preloader-wrapper">
+        <div class="preloader loading">
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+          </div>
+    </div>
+    <!-- Prealoader -->
+
+    <!-- Section -->
+    <section id="main-content" class="uk-section uk-section-default hidden">
+        <h1>Hello {user}!</h1>
+        <div class="uk-child-width-1-3@m uk-grid-small uk-grid-match" uk-grid>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    <h3 class="uk-card-title"><i class="fa fa-wallet"></i> Wallet</h3>
+                    <p><i class="fa fa-inr"></i> 13500</p>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <h3 class="uk-card-title"><i class="fa fa-inr"></i> Balance</h3>
+                    <p><i class="fa fa-inr"></i> 500</p>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-secondary uk-card-body">
+                    <h3 class="uk-card-title">Last Order</h3>
+                    <p>{status}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="uk-section">
+            <div>
+                <button class="uk-button uk-button-primary" onclick="scan()">SCAN QR</button>
+                <video id="preview">SCAN QR</video>
+            </div>
+        </div>
+        
+        <!-- This is the container of the content items -->
+        
+        <div class="uk-child-width-1-2@s" uk-grid>
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Orders</a></li>
+                <li><a href="#">Transactions</a></li>
+            </ul>
+            
+            <ul class="uk-switcher uk-margin">
+                <li>Profile here</li>
+                <li>Orders here</li>
+                <li>Transactions here</li>
+            </ul>
+        </div>
+    </section>
+    <!-- Section -->
+
+    <script>
+        function scan() {
+            let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+            scanner.addListener('scan', function (content, image) {
+                console.log(content);
+                location.reload();
+            });
+        
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+<%- include('partials/footer') %>

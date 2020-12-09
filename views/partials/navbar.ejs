@@ -1,0 +1,76 @@
+
+<style>
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .app_navbar {
+        position: fixed;
+        bottom: 0;
+    }
+
+    .app_nav-items > li  {
+        list-style: none;
+    }
+
+    .app_nav-items > li > a  {
+        align-items: center;
+        margin-left: 290px;
+    }
+
+    .app_nav-items > li > a:first-child  {
+        align-items: center;
+        margin-left: 400px;
+    }
+
+    @media only screen and (min-width : 320px) {
+        .app_nav-items > li > a  {
+            align-items: center;
+            margin-left: 90px;
+        }
+
+        .app_nav-items > li > a:first-child  {
+            align-items: center;
+            margin-left: 40px;
+        }
+    
+    }
+
+    @media only screen and (min-width : 768px) {
+        .app_nav-items > li > a  {
+            align-items: center;
+            margin-left: 190px;
+        }
+
+        .app_nav-items > li > a:first-child  {
+            align-items: center;
+            margin-left: 100px;
+        }
+    }
+    @media only screen and (min-width : 1200px) {
+        .app_nav-items > li > a  {
+            align-items: center;
+            margin-left: 290px;
+        }
+
+        .app_nav-items > li > a:first-child  {
+            align-items: center;
+            margin-left: 400px;
+        }
+    }
+</style> 
+
+<div id="app_navbar" class="app_navbar hide">
+    <ul class="app_nav-items">
+        <li>
+            <a href="/" uk-icon="icon: home"></a>
+            <a href="/register" uk-icon="icon: sign-in"></a>
+            <a href="/login" uk-icon="icon: user"></a>
+            <a href="/dashboard" uk-icon="icon: settings"></a>
+        </li>
+    </ul>
+</div>

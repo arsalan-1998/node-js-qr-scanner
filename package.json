@@ -1,0 +1,31 @@
+{
+  "name": "tsm",
+  "version": "1.0.0",
+  "description": "qr scanner, and wallet management, using Node JS and Express API, with front-end as Bootstrap and UIkiT",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arsalan-1998"
+  },
+  "keywords": [
+    "Express",
+    "JS",
+    "Node",
+    "JS",
+    "HTML",
+    "CSS"
+  ],
+  "author": "anonymousCoder047",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "instascan": "^1.0.0"
+  }
+}
