@@ -1,7 +1,7 @@
 
-<%- include('partials/headers') %>
+<%- include('partials/headers') %> 
 
-<%- include('partials/navbar') %>
+<%- include('partials/navbar', { 'isLoggedin':isLoggedin, 'admin':admin }) %>
 
 <body>
     <!-- Prealoader -->
@@ -20,49 +20,15 @@
     <!-- Section -->
     <section id="main-content" class="uk-section uk-section-default hidden">
         <h1>Login</h1>
-        <br>
-        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider="center: true">
-
-            <ul class="uk-slider-items uk-grid">
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/road.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/road-1.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/hex.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/hex-1.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/hex-2.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-            </ul>
-        
-            <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-            <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
-        
-        </div>
         <div class="clearfix"></div>
 
         <div class="uk-section">
+            <% if( isLoggedin === false ) { %>
+                <script>
+                    M.toast({ html: "Login" });
+                </script>
+            <% } %>
+            
             <div class="row">
                 <div class="col-sm-12">
                     <div id="alert_display" style="display: none;">
@@ -73,7 +39,7 @@
                     </div>
                     <form class="uk-grid-small" uk-grid>
                         <div class="uk-width-1-1">
-                            <input id="user_name" class="uk-input" type="text" placeholder="User Name">
+                            <input id="user_name" class="uk-input" type="text" placeholder="user name">
                         </div>
                         <div class="uk-width-1-2@s" style="margin-top: 25px;">
                             <input id="password" class="uk-input" type="password" placeholder="*******">
@@ -84,7 +50,7 @@
                         </div>
                     </form>
                     <br>
-                    <button class="uk-button uk-button-primary" onclick="login()">SUBMIT</button>
+                    <button class="uk-button uk-button-primary" onclick="login(event)">SUBMIT</button>
                 </div>
             </div>
         </div>
@@ -95,7 +61,8 @@
     <!-- Section -->
 
     <script>
-        function login() {
+        function login(event) {
+            event.preventDefault();
             let alert_display = document.getElementById('alert_display');
             let alert_color = document.getElementById('alert_color');
             let alert_message = document.getElementById('alert_message');
@@ -103,16 +70,64 @@
             let user_name = document.getElementById('user_name').value;
             let password = document.getElementById('password').value;
 
-            $.post('/login', { "user_name":user_name, "password":password })
-            .then((data, textStatus) => {
-                if(!data) {
-                    setTimeout(() => {
+            if( user_name != '' && password != '' ) {
+                $.post('/login', { "user_name":user_name, "password":password })
+                .then((data, textStatus) => {
+                    if( data == 'ERROR' ) {
+                        alert_display.style.display = 'block';
+                        alert_color.classList.toggle('uk-alert-danger');
+                        alert_message.innerHTML = "PASSWORD DOESNOT MATCH";
+                        
+                        setTimeout(() => {
+                            alert_display.style.display = 'none';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "PASSWORD DOESNOT MATCH";
+                        }, 2000);
+                    } else if( data == 'APP_ERROR' ) {
+                        alert_display.style.display = 'block';
+                        alert_color.classList.toggle('uk-alert-danger');
+                        alert_message.innerHTML = "Server Error! Please Try Again Later";
+                        
+                        setTimeout(() => {
+                            alert_display.style.display = 'none';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "Server Error! Please Try Again Later"
+                        }, 2000);
+                    } else if( data == 'DATA_ERROR' ) {
+                        alert_display.style.display = 'block';
+                        alert_color.classList.toggle('uk-alert-danger');
+                        alert_message.innerHTML = "No such Email / User Name";
+                        
+                        setTimeout(() => {
+                            alert_display.style.display = 'none';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "Please Register First";
+                        }, 2000);
+                    } else {
                         alert_display.style.display = 'block';
                         alert_color.classList.toggle('uk-alert-success');
-                        alert_message.innerHTML = "Successful "+textStatus;
-                    }, 2000);
-                }
-            });
+                        alert_message.innerHTML = "server status"+ textStatus +" "+data;
+                        
+                        setTimeout(() => {
+                            alert_display.style.display = 'none';
+                            alert_color.classList.toggle('uk-alert-success');
+                            alert_message.innerHTML = "SERVER STATUS "+ textStatus +" "+data;
+                        }, 2000);
+                        location.pathname = '/dashboard';
+                    }
+                });
+
+            } else {
+                alert_display.style.display = 'block';
+                alert_color.classList.toggle('uk-alert-danger');
+                alert_message.innerHTML = "Please fill the fileds";
+                
+                setTimeout(() => {
+                    alert_display.style.display = 'none';
+                    alert_color.classList.toggle('uk-alert-danger');
+                    alert_message.innerHTML = "Please fill the fields";
+                }, 2000);
+            }
         }
     </script>
 

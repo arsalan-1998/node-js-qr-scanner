@@ -1,11 +1,11 @@
 
 <%- include('partials/headers') %>
 
-<%- include('partials/navbar') %>
+<%- include('partials/navbar', { 'isLoggedin':isLoggedin, 'admin':admin }) %>
 
 <body>
     <!-- Prealoader -->
-    <div id="preloader-wrapper">
+    <div id="preloader-wrapper"> 
         <div class="preloader loading">
             <span class="slice"></span>
             <span class="slice"></span>

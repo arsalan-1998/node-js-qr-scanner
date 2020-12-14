@@ -1,0 +1,140 @@
+
+<%- include('partials/headers') %> 
+
+<%- include('partials/navbar') %>
+
+<body>
+    <!-- Prealoader -->
+    <div id="preloader-wrapper">
+        <div class="preloader loading">
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+          </div>
+    </div>
+    <!-- Prealoader -->
+
+    <!-- Section -->
+    <section id="main-content" class="uk-section uk-section-default hidden">
+        <div class="row">
+            <p id="user_name" hidden><%=user_name%></p>
+            <div id="alert_display" style="display: none;">
+                <div id="alert_color" class="uk-alert-primary" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p id="alert_message"></p>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <p>ENTER THE AMOUNT TO DEBIT</p><br>
+                <input type="number" name="amount" id="amount" class="uk-input"><br><br>
+                <button class="uk-button uk-button-primary" onclick="checkout()">DEBIT</button>
+            </div>
+        </div>
+    </section>
+    <!-- Section -->
+
+    <script>
+        function checkout() {
+            let alert_display = document.getElementById('alert_display');
+            let alert_color = document.getElementById('alert_color');
+            let alert_message = document.getElementById('alert_message');
+            let amount = parseInt(document.getElementById('amount').value);
+            let user_name = document.getElementById('user_name').innerHTML;
+
+            if( amount == '' ) {
+                alert_display.style.display = 'block';
+                alert_color.classList.toggle('uk-alert-danger');
+                alert_message.innerHTML = "Please Enter the amount";
+                
+                setTimeout(() => {
+                    alert_display.style.display = 'none';
+                    alert_color.classList.toggle('uk-alert-danger');
+                    alert_message.innerHTML = "Please Enter the amount";
+                }, 2000);
+            } else if( amount < 0 ) {
+                alert_display.style.display = 'block';
+                alert_color.classList.toggle('uk-alert-danger');
+                alert_message.innerHTML = "Please Enter Amount Greater Than 0";
+                
+                setTimeout(() => {
+                    alert_display.style.display = 'none';
+                    alert_color.classList.toggle('uk-alert-danger');
+                    alert_message.innerHTML = "Please Enter Amount Greater Than 0";
+                }, 2000);
+            } else {
+                $.get('/dashboard/wallet/limit', (data, status, xhr) => {
+                    if(data == 'APP_ERROR') {
+                        alert_display.style.display = 'block';
+                        alert_color.classList.toggle('uk-alert-danger');
+                        alert_message.innerHTML = "Server Error!";
+                        
+                        setTimeout(() => {
+                            alert_display.style.display = 'none';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "Server Error!";
+                        }, 2000); 
+                    } else {
+                        let limit = parseInt(data);
+                        if( amount > limit ) {
+                            alert_display.style.display = 'block';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "Sorry Limit Exceeded!";
+                            
+                            setTimeout(() => {
+                                alert_display.style.display = 'none';
+                                alert_color.classList.toggle('uk-alert-danger');
+                                alert_color.classList.remove('uk-alert-danger');
+                                alert_message.innerHTML = "Sorry Limit Exceeded!";
+                            }, 2000);
+                            location.pathname = '/dashboard';
+                        } else {
+                            $.post('/dashboard/wallet/limit', { "debit":amount }).then((data, status, xhr) => {
+                                if(data == 'APP_ERROR') {
+                                    alert_display.style.display = 'block';
+                                    alert_color.classList.toggle('uk-alert-danger');
+                                    alert_message.innerHTML = "Sorry Server Error!";
+                                    
+                                    setTimeout(() => {
+                                        alert_display.style.display = 'none';
+                                        alert_color.classList.toggle('uk-alert-danger');
+                                        alert_color.classList.remove('uk-alert-danger');
+                                        alert_message.innerHTML = "Sorry Server Error!";
+                                    }, 2000);
+                                } else if(data == 'DATA_ERROR') {
+                                    alert_display.style.display = 'block';
+                                    alert_color.classList.toggle('uk-alert-danger');
+                                    alert_message.innerHTML = "No balance!";
+                                    
+                                    setTimeout(() => {
+                                        alert_display.style.display = 'none';
+                                        alert_color.classList.toggle('uk-alert-danger');
+                                        alert_color.classList.remove('uk-alert-danger');
+                                        alert_message.innerHTML = "No balance!";
+                                    }, 2000);
+                                } else {
+                                    alert_display.style.display = 'block';
+                                    alert_color.classList.toggle('uk-alert-success');
+                                    alert_message.innerHTML = "Successfull!";
+                                    
+                                    setTimeout(() => {
+                                        alert_display.style.display = 'none';
+                                        alert_color.classList.toggle('uk-alert-success');
+                                        alert_color.classList.remove('uk-alert-success');
+                                        alert_message.innerHTML = "Successfull!";
+                                    }, 2000);
+                                    location.pathname = '/dashboard';
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+
+</body>
+
+<%- include('partials/footer') %>

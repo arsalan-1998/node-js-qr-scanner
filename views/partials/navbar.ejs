@@ -4,7 +4,7 @@
         display: none;
     }
 
-    .show {
+    .show { 
         display: block;
     }
 
@@ -66,11 +66,19 @@
 
 <div id="app_navbar" class="app_navbar hide">
     <ul class="app_nav-items">
-        <li>
-            <a href="/" uk-icon="icon: home"></a>
-            <a href="/register" uk-icon="icon: sign-in"></a>
-            <a href="/login" uk-icon="icon: user"></a>
-            <a href="/dashboard" uk-icon="icon: settings"></a>
-        </li>
+        <% if( isLoggedin === false ) { %>
+            <li>
+                <a href="/" uk-icon="icon: home"></a>
+                <a href="/register" uk-icon="icon: sign-in"></a>
+                <a href="/login" uk-icon="icon: user"></a>
+            </li>
+        <% } else { %>    
+            <li>
+                <a href="/" uk-icon="icon: home"></a>
+                <a href="/logout" uk-icon="icon: sign-out"></a>
+                <a href="/scan"><i class="fa fa-qrcode"></i></a>
+                <a href="/dashboard" uk-icon="icon: settings"></a>
+            </li>
+        <% } %>
     </ul>
 </div>

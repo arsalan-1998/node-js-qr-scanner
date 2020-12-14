@@ -1,0 +1,50 @@
+
+<%- include('partials/headers') %> 
+
+<%- include('partials/navbar') %>
+
+<body>
+    <!-- Prealoader -->
+    <div id="preloader-wrapper">
+        <div class="preloader loading">
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+            <span class="slice"></span>
+          </div>
+    </div>
+    <!-- Prealoader -->
+
+    <!-- Section -->
+    <section id="main-content" class="uk-section uk-section-default hidden">
+        <h1>Hello <%= user_name %>!</h1>
+        
+        <div class="uk-section">
+            <div>
+                <button class="uk-button uk-button-primary" onclick="scan()">SCAN QR</button>
+                <video id="preview">SCAN QR</video>
+            </div>
+        </div>
+    </section>
+    <!-- Section -->
+
+    <script>
+        function scan() {
+            let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+            scanner.addListener('scan', function (content, image) {
+                location.pathname = '/'+content;
+            });
+        
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+<%- include('partials/footer') %>

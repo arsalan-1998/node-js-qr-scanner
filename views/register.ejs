@@ -1,7 +1,7 @@
 
 <%- include('partials/headers') %>
 
-<%- include('partials/navbar') %>
+<%- include('partials/navbar', { 'isLoggedin':isLoggedin, 'admin':admin }) %> 
 
 <body>
     <!-- Prealoader -->
@@ -20,48 +20,6 @@
     <!-- Section -->
     <section id="main-content" class="uk-section uk-section-default hidden">
         <h1>Register</h1>
-        <br>
-        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider="center: true">
-
-            <ul class="uk-slider-items uk-grid">
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/road.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/road-1.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/hex.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/hex-1.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-                <li class="uk-width-3-4">
-                    <div class="uk-panel">
-                        <img src="/public/assets/images/hex-2.jpg" alt="">
-                        <div class="uk-position-center uk-panel"></div>
-                    </div>
-                </li>
-            </ul>
-        
-            <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-            <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
-        
-        </div>
-        <div class="clearfix"></div>
-
         <div class="uk-section">
             <div class="row">
                 <div class="col-sm-12">
@@ -89,7 +47,7 @@
                         </div>
                     </form>
                     <br>
-                    <button class="uk-button uk-button-primary" onclick="register()">SUBMIT</button>
+                    <button class="uk-button uk-button-primary" onclick="register(event)">SUBMIT</button>
                     <div style="margin-top: 4px;">
                         <a class="uk-button" href="/login">Have Account</a>
                     </div>
@@ -103,7 +61,8 @@
     <!-- Section -->
 
     <script>
-        function register() {
+        function register(event) {
+            event.preventDefault();
             let alert_display = document.getElementById('alert_display');
             let alert_color = document.getElementById('alert_color');
             let alert_message = document.getElementById('alert_message');
@@ -117,7 +76,7 @@
             if( user_name == '' || user_phone == '' || user_email == '' || password == '' || c_password == '' ) {
                 alert_display.style.display = 'block';
                 alert_color.classList.toggle('uk-alert-danger');
-                alert_message.innerHTML = "Please Fill the form";
+                alert_message.innerHTML = "Please Fill the required fields";
                 setTimeout(() => {
                     alert_display.style.display = 'none';
                     alert_color.classList.toggle('uk-alert-danger');
@@ -134,17 +93,43 @@
                 }, 2000);
             } else {
                 if( password === c_password ) {
-                    $.post('/register', { "user_name":user_name, "user_phone":user_phone, "user_email":user_email, "password":password })
+                    $.post('/register', { "user_name":user_name, "user_email":user_email, "user_phone":user_phone, "user_email":user_email, "password":password })
                     .then((data, textStatus) => {
-                        if(!data) {
+                        if(data == 'APP_ERROR') {
+                            alert_display.style.display = 'block';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "Server Status "+textStatus+" Sorry Server Problem! Please Try Again Later "+data;
+                            setTimeout(() => {
+                                alert_display.style.display = 'block';
+                                alert_color.classList.toggle('uk-alert-danger');
+                                alert_message.innerHTML = "Sorry Server Problem! Please Try Again Later "+data;
+                            }, 2000);
+                        } else if(data == 'DATA_ERROR') {
+                            alert_display.style.display = 'block';
+                            alert_color.classList.toggle('uk-alert-danger');
+                            alert_message.innerHTML = "Sorry User Already Exists please Login "+data;
+                            setTimeout(() => {
+                                alert_display.style.display = 'block';
+                                alert_color.classList.toggle('uk-alert-danger');
+                                alert_message.innerHTML = "Sorry User Already Exists please Login "+data;
+                                location.pathname = '/login';
+                            }, 2000);
+                        } else {
+                            alert_display.style.display = 'block';
+                            alert_color.classList.toggle('uk-alert-success');
+                            alert_message.innerHTML = "Successfully Created Account "+data;
                             setTimeout(() => {
                                 alert_display.style.display = 'block';
                                 alert_color.classList.toggle('uk-alert-success');
-                                alert_message.innerHTML = "Successful "+textStatus;
+                                alert_message.innerHTML = "Successfully Created Account "+data;
+                                location.pathname = '/dashboard';
                             }, 2000);
                         }
                     });
                 } else {
+                    alert_display.style.display = 'block';
+                    alert_color.classList.toggle('uk-alert-danger');
+                    alert_message.innerHTML = "Password Doesnot Match";
                     setTimeout(() => {
                         alert_display.style.display = 'block';
                         alert_color.classList.toggle('uk-alert-danger');

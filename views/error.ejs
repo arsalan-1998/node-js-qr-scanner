@@ -20,6 +20,12 @@
     <!-- Section -->
     <section id="main-content" class="uk-section uk-section-default hidden">
         <h1>WELCOME TO TSM</h1>
+        <div id="alert_display" style="display: none;">
+            <div id="alert_color" class="uk-alert-primary" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p id="alert_message"></p>
+            </div>
+        </div>
         <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow>
 
             <ul class="uk-slideshow-items">
@@ -40,6 +46,25 @@
         </div>
     </section>
     <!-- Section -->
+
+    <script>
+        let data = '<%=data%>';
+        let alert_display = document.getElementById('alert_display');
+        let alert_color = document.getElementById('alert_color');
+        let alert_message = document.getElementById('alert_message');
+        if( data === 'DATA_ERROR' ) {
+            alert_display.style.display = 'block';
+            alert_color.classList.toggle('uk-alert-success');
+            alert_message.innerHTML = "No Such User";
+            
+            setTimeout(() => {
+                alert_display.style.display = 'none';
+                alert_color.classList.toggle('uk-alert-danger');
+                alert_message.innerHTML = "No Such User";
+                M.toast({ html: "No Such User!" });
+            }, 2000);
+        }
+    </script>
 
 </body>
 
