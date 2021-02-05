@@ -2,7 +2,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const userSchema = require('../model/schema/Userschema')
 const Usr = mongoose.model('login', userSchema)
 
